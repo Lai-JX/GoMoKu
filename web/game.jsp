@@ -7,7 +7,7 @@
     <title>GoMoKu</title>
     <!--写base标签，永远固定相对路径跳转的结果-->
     <base href="http://47.120.38.17:8080/">
-
+<%--    <base href="http://127.0.0.1:8080/">--%>
     <link type="text/css" rel="stylesheet" href="/static/css/style.css" >
 </head>
 <script src="/static/script/jquery-1.7.2.js"></script>
@@ -101,7 +101,8 @@
     // 2. 获取用户名
     const username = '${username}'
     // 3. 开启webstocket服务的ip地址  ws:// + ip地址 + 访问路径 https://36428sh062.imdo.co/
-    var ws = new WebSocket('ws://47.120.38.17:8080/websocket/'+username);
+    // var ws = new WebSocket('ws://47.120.38.17:8080/websocket/'+username);
+    var ws = new WebSocket('ws://127.0.0.1:8080/websocket/'+username);
 
     // 4. 变量初始化
     var game_id = -1;
@@ -110,7 +111,7 @@
     var opponent = ""   // 对手
     td1 = 'url("/static/img/blackStone.gif") no-repeat center'
     td2 = 'url("/static/img/whiteStone.gif") no-repeat center'
-    limitConnect = 0
+    finish = false
     // 棋盘二维数组
     var arr= new Array(10).fill(0)
     for(let i=0;i<arr.length;i++){
@@ -118,6 +119,7 @@
     }
 
     // 5. 添加监听事件
+    // 5.1 落棋
     let list = document.getElementsByTagName('td')
     console.log("td list length:"+list.length)
     for (let i=0; i<list.length; i++){
@@ -126,6 +128,10 @@
             if(flag==0) {
                 alert("It is not your turn!")
                 return
+            }
+            if (finish) {
+                alert("Game is over")
+                return;
             }
             let num = this.num
             let x = Math.floor(num / 10)
@@ -141,10 +147,57 @@
                 flag=0
             }
         }
-    } 
+    }
+    // 5.2 监听返回事件
+    //返回页面
+    pushHistory();
+    window.addEventListener("popstate", function(e) {
+        // alert("我监听到了浏览器的返回按钮事件啦");//根据自己的需求实现自己的功能
+        if(game_id == -1) {
+            flag = confirm("Want To Rematch?")
+            if (flag) {
+                arg = {'state':"quit_matching","name":username}
+                ws.send(JSON.stringify(arg))
+                window.history.go(-1)
+            } else {
+                pushHistory()
+            }
+        } else if (!finish){
+            flag = confirm("Want To Abandoned The Game?")
+            if (flag) {
+                arg = {'state':"quit_matched","name":username,"game_id":game_id}
+                ws.send(JSON.stringify(arg))
+                window.history.go(-1)
+            } else {
+                pushHistory()
+            }
+        }
+        //  window.history.go(-1);
+    }, false);
+    // 5.3 监听页面关闭
+    window.onbeforeunload = function (e) {
+        if(game_id == -1) {
+            arg = {'state':"quit_matching","name":username}
+            ws.send(JSON.stringify(arg))
+        } else if (!finish){
+            arg = {'state':"quit_matched","name":username,"game_id":game_id}
+            ws.send(JSON.stringify(arg))
+        }
+    }
+
+    function pushHistory() {
+        var state = {
+            title: "title",
+            url: "#"
+        };
+        window.history.pushState(state, "title");
+    }
+
     // 6. 接收来自服务端的信息
     function init() {
         
+        // var ws = new WebSocket('ws://127.0.0.1:8080/websocket/'+username);
+        // var ws = new WebSocket('ws://47.120.38.17:8080/websocket/'+username);
         // var ws = new WebSocket('ws://127.0.0.1:8080/websocket/'+username);
         //监听是否连接成功
         ws.onopen = function () {
@@ -183,20 +236,25 @@
                 if (res1['flag'] == 'true') {
                     alert('You Win! Congratulations!')
                     document.getElementById("result").innerHTML = ""+username+" win !"
-                } else {
+                } else if (res1['flag'] == 'flag') {
                     alert('You Lose!')
                     document.getElementById("result").innerHTML = ""+opponent+" win !"
+                } else if (res1['flag'] == 'quit') {
+                    alert('Opponent has given up!')
+                    document.getElementById("result").innerHTML = ""+opponent+" give up !"
                 }
+                finish = true
                 //完成通信后关闭WebSocket连接
                 ws.close();
             }
             
         }
 // 监听连接关闭事件
-        ws.onclose = function () {
+        ws.onclose = function (e) {
             // 监听整个过程中websocket的状态
+            console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean)
             console.log('ws连接状态：' + ws.readyState);
-            reconnect();
+            // reconnect();
 
         }
 // 监听并处理error事件

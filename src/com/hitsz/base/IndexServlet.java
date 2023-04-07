@@ -15,8 +15,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class IndexServlet extends HttpServlet {
+    private ArrayList<String> users = new ArrayList<>();
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -73,11 +75,12 @@ public class IndexServlet extends HttpServlet {
 
         System.out.println(request.getMethod());
         System.out.println("username:"+username);
-//        Connection  con = JDBCUtils.getConn();
-        if (username == null) {
+//        Connection  con = JDBCUtils.getConn(); //|| (users!=null && users.contains(username))
+        if (username == null ) {
             //   跳回登录页面
             request.getRequestDispatcher("index.jsp").forward(request, response);
         } else {
+//            users.add(username);
             request.getSession().setAttribute("username",username);
             request.getRequestDispatcher("game.jsp").forward(request, response);
         }

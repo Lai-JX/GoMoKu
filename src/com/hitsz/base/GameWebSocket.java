@@ -70,23 +70,34 @@ public class GameWebSocket {
         if(jsonTo.get("game_id") != null) {
             // 1. 获取参数
             int game_id = Integer.parseInt((String)jsonTo.get("game_id"));
+            String user1 = (String) jsonTo.get("name");
+            String user2 = "";
+            // 另一user
+            if (gameIdToUser1.get(game_id).equals(user1)) {
+                user2 = gameIdToUser2.get(game_id);
+            } else {
+                user2 = gameIdToUser1.get(game_id);
+            }
+            // 判游戏过程中退出
+            if (jsonTo.get("state")!=null && jsonTo.get("state").equals("quit_matched")){    // 游戏过程中返回
+                userList.remove(user1);
+                sendMessageTo("{\"flag\":\"quit\"}",user2);
+                userList.remove(user2);
+                gameIdToUser1.remove(game_id);
+                gameIdToUser2.remove(game_id);
+                gameIdToMap.remove(game_id);
+                return;
+            }
             int x = (int)jsonTo.get("x");
             int y = (int)jsonTo.get("y");
             int color = (int)jsonTo.get("color");
-            String user1 = (String) jsonTo.get("name");
-            String user2 = "";
+
             System.out.println("user:");
             System.out.println(gameIdToUser1);
             System.out.println(gameIdToUser2);
             // 更新棋盘
             gameIdToMap.get(game_id)[x][y] = color;
-            // 另一user
-            if (gameIdToUser1.get(game_id).equals(user1)) {
 
-                user2 = gameIdToUser2.get(game_id);
-            } else {
-                user2 = gameIdToUser1.get(game_id);
-            }
             System.out.println("user1:"+user1+" user2:"+user2);
             // 2. 给另一user返回位置
             sendMessageTo("{\"x\":\""+x + "\",\"y\":"+y+"}",user2);
@@ -94,10 +105,19 @@ public class GameWebSocket {
             if(checkWin(game_id, x, y, color)){
                 sendMessageTo("{\"flag\":\"true\"}",user1);
                 sendMessageTo("{\"flag\":\"false\"}",user2);
+
+                userList.remove(user1);
+                userList.remove(user2);
+                gameIdToUser1.remove(game_id);
+                gameIdToUser2.remove(game_id);
+                gameIdToMap.remove(game_id);
             }
-
-
-
+        }
+        if(jsonTo.get("state") != null) {
+            if (jsonTo.get("state").equals("quit_matching")){   // 匹配过程中返回
+                userList.remove(jsonTo.get("name"));
+                queue.poll();
+            }
         }
 
 //        userList.get(username).session.getAsyncRemote().sendText(message);
@@ -112,7 +132,8 @@ public class GameWebSocket {
     public void sendMessageTo(String message, String To) throws IOException {
         System.out.println("server send:"+message + " to " + To);
         GameWebSocket tmp = userList.get(To);
-        tmp.session.getAsyncRemote().sendText(message);
+//        tmp.session.getAsyncRemote().sendText(message);
+        tmp.session.getBasicRemote().sendText(message);
     }
 
     public synchronized void match() throws IOException {
