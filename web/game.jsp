@@ -6,11 +6,11 @@
     <meta charset="UTF-8">
     <title>GoMoKu</title>
     <!--写base标签，永远固定相对路径跳转的结果-->
-    <base href="https://36428sh062.imdo.co/">
+    <base href="http://47.120.38.17:8080/">
 
-    <link type="text/css" rel="stylesheet" href="static/css/style.css" >
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css" >
 </head>
-<script src="static/script/jquery-1.7.2.js"></script>
+<script src="/static/script/jquery-1.7.2.js"></script>
 <style type="text/css">
     .td0 {
         width: 50px;
@@ -95,13 +95,13 @@
         }
         html += "</tr>"
     }
-    console.log(html)
+    // console.log(html)
     tb.innerHTML += html
 
     // 2. 获取用户名
     const username = '${username}'
     // 3. 开启webstocket服务的ip地址  ws:// + ip地址 + 访问路径 https://36428sh062.imdo.co/
-    var ws = new WebSocket('wss://36428sh062.imdo.co/websocket/'+username);
+    var ws = new WebSocket('ws://47.120.38.17:8080/websocket/'+username);
 
     // 4. 变量初始化
     var game_id = -1;
@@ -110,6 +110,7 @@
     var opponent = ""   // 对手
     td1 = 'url("/static/img/blackStone.gif") no-repeat center'
     td2 = 'url("/static/img/whiteStone.gif") no-repeat center'
+    limitConnect = 0
     // 棋盘二维数组
     var arr= new Array(10).fill(0)
     for(let i=0;i<arr.length;i++){
@@ -148,6 +149,7 @@
         //监听是否连接成功
         ws.onopen = function () {
             ws.send('{"msg":"建立连接"}')
+            console.log('ws连接状态：' + ws.readyState);
             // 等待
             var toast = document.getElementById("toast");
             // console.log(toast)
@@ -158,6 +160,8 @@
 
             res1 = eval("("+data.data+")")
             console.log("receive:"+res1)
+            console.log("msg:"+res1['msg'])
+            console.log(typeof(res1['flag'])=="undefined")
             console.log("game_id:"+res1['game_id']+ " x:" + res1['x'] + " y:" + res1['y'] + " flag:"+res1['flag'])
 
             if(typeof(res1['game_id']) != "undefined") {                                    // 开始下棋
@@ -192,7 +196,7 @@
         ws.onclose = function () {
             // 监听整个过程中websocket的状态
             console.log('ws连接状态：' + ws.readyState);
-            // reconnect();
+            reconnect();
 
         }
 // 监听并处理error事件

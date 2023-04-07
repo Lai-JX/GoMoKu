@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="gomoku_war">
+    <output-path>$PROJECT_DIR$/out/artifacts/gomoku_war</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="GoMoKU" />
+        </element>
+      </element>
+      <element id="artifact" artifact-name="client:war exploded" />
+    </root>
+  </artifact>
+</component>

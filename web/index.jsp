@@ -50,11 +50,11 @@
     <meta charset="UTF-8">
     <title>GoMoKu</title>
     <!--写base标签，永远固定相对路径跳转的结果-->
-    <base href="https://36428sh062.imdo.co/">
+    <base href="http://47.120.38.17:8080/">
 
-    <link type="text/css" rel="stylesheet" href="static/css/style.css" >
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css" >
 </head>
-<script src="static/script/jquery-1.7.2.js"></script>
+<script src="/static/script/jquery-1.7.2.js"></script>
 <script type="text/javascript">
     function validate(obj) {
         console.log(obj.value.length)
@@ -84,7 +84,7 @@
 
     <div id="content" >
         <div class="login_form">
-            <img style="display:block;margin-left:auto;margin-right:auto;margin-top: 15px" alt="" src="static/img/logo.gif" >
+            <img style="display:block;margin-left:auto;margin-right:auto;margin-top: 15px" alt="" src="/static/img/logo.gif" >
             <div class="login_box" style="margin-top: 15px">
 
                 <div class="msg_cont">

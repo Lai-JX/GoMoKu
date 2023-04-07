@@ -48,6 +48,8 @@ public class GameWebSocket {
         userList.put(username, this);
         queue.add(username);
 
+        sendMessageTo("{\"msg\":\""+queue.toString()+"\"}",username);
+
         System.out.println("已连接 "+username);
         match();
     }
