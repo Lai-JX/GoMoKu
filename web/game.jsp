@@ -141,6 +141,7 @@
             console.log(this.id,game_id)
             if (arr[x][y]==0 && game_id != -1){
                 arg = {'x':x, 'y':y, 'color': color, 'game_id':game_id, 'name': username}
+                arr[x][y] = color
                 this.style.background = color==1 ? td1 : td2;
                 console.log(arg) 
                 ws.send(JSON.stringify(arg))
@@ -236,7 +237,7 @@
                 if (res1['flag'] == 'true') {
                     alert('You Win! Congratulations!')
                     document.getElementById("result").innerHTML = ""+username+" win !"
-                } else if (res1['flag'] == 'flag') {
+                } else if (res1['flag'] == 'false') {
                     alert('You Lose!')
                     document.getElementById("result").innerHTML = ""+opponent+" win !"
                 } else if (res1['flag'] == 'quit') {

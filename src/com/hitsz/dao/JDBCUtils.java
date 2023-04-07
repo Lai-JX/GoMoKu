@@ -20,6 +20,7 @@ public class JDBCUtils {
                     +"&useSSL=false&serverTimezone=GMT%2B8","root","12345As#");
 //            conn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/gomoku"+"?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true"
 //                    +"&useSSL=false&serverTimezone=GMT%2B8","root","123456");
+            conn.setAutoCommit(true);
         }catch (Exception exception){
             exception.printStackTrace();
         }

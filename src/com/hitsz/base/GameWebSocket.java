@@ -41,7 +41,7 @@ public class GameWebSocket {
 
     @OnOpen
     public void onOpen(@PathParam("username") String username, Session session) throws IOException {
-
+//        gameDao.gameFinish(2,2,"11");
         this.username = username;
         this.session = session;
         // 添加用户名和对应客户端
@@ -86,6 +86,7 @@ public class GameWebSocket {
                 gameIdToUser1.remove(game_id);
                 gameIdToUser2.remove(game_id);
                 gameIdToMap.remove(game_id);
+                gameDao.gameFinish(game_id,1,null);  // 结束但没完成
                 return;
             }
             int x = (int)jsonTo.get("x");
@@ -95,6 +96,7 @@ public class GameWebSocket {
             System.out.println("user:");
             System.out.println(gameIdToUser1);
             System.out.println(gameIdToUser2);
+            gameDao.addOp(game_id, user1, x, y, color);
             // 更新棋盘
             gameIdToMap.get(game_id)[x][y] = color;
 
@@ -111,6 +113,7 @@ public class GameWebSocket {
                 gameIdToUser1.remove(game_id);
                 gameIdToUser2.remove(game_id);
                 gameIdToMap.remove(game_id);
+                gameDao.gameFinish(game_id, 2, user1); // 结束并且完成了
             }
         }
         if(jsonTo.get("state") != null) {
