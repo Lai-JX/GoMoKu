@@ -101,8 +101,8 @@
     // 2. 获取用户名
     const username = '${username}'
     // 3. 开启webstocket服务的ip地址  ws:// + ip地址 + 访问路径 https://36428sh062.imdo.co/
-    // var ws = new WebSocket('ws://47.120.38.17:8080/websocket/'+username);
-    var ws = new WebSocket('ws://127.0.0.1:8080/websocket/'+username);
+    var ws = new WebSocket('ws://47.120.38.17:8080/websocket/'+username);
+    // var ws = new WebSocket('ws://127.0.0.1:8080/websocket/'+username);
 
     // 4. 变量初始化
     var game_id = -1;

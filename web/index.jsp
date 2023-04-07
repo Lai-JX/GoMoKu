@@ -50,8 +50,8 @@
     <meta charset="UTF-8">
     <title>GoMoKu</title>
     <!--写base标签，永远固定相对路径跳转的结果-->
-<%--    <base href="http://47.120.38.17:8080/">--%>
-    <base href="http://127.0.0.1:8080/">
+    <base href="http://47.120.38.17:8080/">
+<%--    <base href="http://127.0.0.1:8080/">--%>
     <link type="text/css" rel="stylesheet" href="/static/css/style.css" >
 </head>
 <script src="/static/script/jquery-1.7.2.js"></script>

@@ -16,10 +16,10 @@ public class JDBCUtils {
     public static Connection getConn() {
         Connection  conn = null;
         try {
-//            conn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/gomoku"+"?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true"
-//                    +"&useSSL=false&serverTimezone=GMT%2B8","root","12345As#");
             conn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/gomoku"+"?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true"
-                    +"&useSSL=false&serverTimezone=GMT%2B8","root","123456");
+                    +"&useSSL=false&serverTimezone=GMT%2B8","root","12345As#");
+//            conn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/gomoku"+"?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true"
+//                    +"&useSSL=false&serverTimezone=GMT%2B8","root","123456");
         }catch (Exception exception){
             exception.printStackTrace();
         }
